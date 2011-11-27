@@ -38,10 +38,50 @@ var Scene = function (options) {
 
     //record mouse position...
     this.canvas.addEventListener('mousemove',function(evt){
-           this._scene.mousepos ={x: evt.offsetX, y:evt.offsetY};
-           this._scene.refresh();
+       this._scene.mousepos ={x: evt.offsetX, y:evt.offsetY};
+       this._scene.refresh();
     });
 
+
+    this.canvas.addEventListener('mousedown', function (evt){
+       //navigate shapes to fake a mousedown event on it
+       for (var i=0; i<this._scene.shapes.length; i++){
+            var shape = this._scene.shapes[i];
+            if(shape.isMouseOver()){
+                shape._onEvent('mousedown');
+            }
+       } 
+    });
+
+    this.canvas.addEventListener('mouseup', function (evt){
+       //navigate shapes to fake a mouseup event on it
+       for (var i=0; i<this._scene.shapes.length; i++){
+            var shape = this._scene.shapes[i];
+            if(shape.isMouseOver()){
+                shape._onEvent('mouseup');    
+            }
+       } 
+    });
+
+    this.canvas.addEventListener('click', function (evt){
+       //navigate shapes to fake a click event on it
+       for (var i=0; i<this._scene.shapes.length; i++){
+            var shape = this._scene.shapes[i];
+            if(shape.isMouseOver()){
+                shape._onEvent('click');    
+            }
+       } 
+    });
+
+    this.canvas.addEventListener('dblclick', function (evt){
+       //navigate shapes to fake a dblclick event on it
+       for (var i=0; i<this._scene.shapes.length; i++){
+            var shape = this._scene.shapes[i];
+            if(shape.isMouseOver()){
+                shape._onEvent('dblclick');    
+            }
+       } 
+    });
 };
 
 //append a shape to scene
@@ -79,9 +119,13 @@ var Shapes = (function (){
     //Shape interface that allows:
     // move, fill, stroke, styles...
     var shape = function () {
-        this.mouse_is_over = false;
+        this._eventListeners = [];
+        this._mouse_over = false;
     };
 
+    shape.prototype.isMouseOver = function (){
+        return this._mouse_over;    
+    };
 
     shape.prototype.init = function(c, options) {
         this.scene = c;
@@ -104,12 +148,23 @@ var Shapes = (function (){
     };
     
     //faked events...
-    shape.prototype.onmouseover = function (){
-        return false;
+    shape.prototype.addEventListener = function (name, f){
+        this._eventListeners.push({
+            name: name,
+            func: f
+        });
+        return this;
     };
 
-    shape.prototype.onmouseout  = function (){
-        return false;
+    //when a event is fired, this tries to call functions
+    //defined with listeners
+    shape.prototype._onEvent = function (name){
+        for (var i=0; i<this._eventListeners.length; i++){
+            var e = this._eventListeners[i];
+            if(e.name == name) {
+                e.func(this);
+            }
+        }     
     };
 
     //begin a path to draw
@@ -131,12 +186,14 @@ var Shapes = (function (){
         var pos = this.scene.mousepos;
 
         if (this.scene.ctx.isPointInPath(pos.x,pos.y)) {
-            if (!this.mouse_is_over) this.onmouseover();
-            this.mouse_is_over = true;
+            if (!this.isMouseOver())
+                this._onEvent('mouseover');
+            this._mouse_over = true;
         } else {
-            if (this.mouse_is_over) {
-                this.onmouseout();
-                this.mouse_is_over=false;
+            if (this.isMouseOver()) {
+                //this.onmouseout();
+                this._onEvent('mouseout');
+                this._mouse_over=false;
             }
         }
         this.scene.ctx.restore();
@@ -159,7 +216,7 @@ var Shapes = (function (){
     };
 
     var Circle = function (scene, options){
-        
+    //TODO: set circle function    
     };
 
 
