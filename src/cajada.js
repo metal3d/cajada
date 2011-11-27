@@ -1,3 +1,26 @@
+/*
+    Cajada - Canvas Javascript Draw and Animation library
+
+    Copyright Patrice Ferlet <metal3d@gmail.com>
+
+    License: LGPL v3
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+
 var cajada = (function (){
 
 //function to merge options
@@ -59,6 +82,12 @@ var Scene = function (options) {
     }
 };
 
+//return attached canvas
+Scene.prototype.getCanvas = function() {
+    return this.canvas;
+};
+
+
 //append a shape to scene
 Scene.prototype.append = function (shape){
     this.shapes.push(shape);
@@ -70,7 +99,6 @@ Scene.prototype.clear = function (){
     ctx.moveTo(0,0);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0,0,this.size[0], this.size[1]);
-    //console.log("ctx.clearRect(0,0,"+this.size[0]+","+this.size[1]+")")
     return this;
 };
 
@@ -96,6 +124,46 @@ var Shapes = (function (){
     var shape = function () {
         this._eventListeners = [];
         this._mouse_over = false;
+        this._draggable = null;
+    };
+
+
+    //set this shape draggable
+    shape.prototype.setDraggable = function (state){
+        if (typeof(state)=="undefined" || state === false) {
+            this._draggable=false;
+            return;
+        } 
+        
+        var addevent = false;
+        if (this._draggable === null) addevent=true;
+        this._draggable = true;
+        
+        if (!addevent) return;
+
+        var _shape = this;
+
+        this.addEventListener('mousedown', function (){
+            if (!_shape._draggable) return;
+            _shape._mouse_origin = _shape.scene.mousepos;
+            _shape._origin = [_shape.x, _shape.y];
+            _shape.dragging = true;    
+        });
+
+        var c = this.scene.getCanvas();
+
+        c.addEventListener('mousemove', function(){
+            if (!_shape._draggable) return;
+            if (!_shape.dragging) return;
+            _shape.x = _shape._origin[0] + c._scene.mousepos.x - _shape._mouse_origin.x;
+            _shape.y = _shape._origin[1] + c._scene.mousepos.y - _shape._mouse_origin.y;
+            c._scene.refresh();
+        });
+
+        this.addEventListener('mouseup', function (){
+            if (!_shape._draggable) return;
+            _shape.dragging = false;    
+        });
     };
 
     shape.prototype.isMouseOver = function (){
@@ -166,7 +234,6 @@ var Shapes = (function (){
             this._mouse_over = true;
         } else {
             if (this.isMouseOver()) {
-                //this.onmouseout();
                 this._onEvent('mouseout');
                 this._mouse_over=false;
             }
