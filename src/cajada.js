@@ -42,46 +42,21 @@ var Scene = function (options) {
        this._scene.refresh();
     });
 
-
-    this.canvas.addEventListener('mousedown', function (evt){
-       //navigate shapes to fake a mousedown event on it
-       for (var i=0; i<this._scene.shapes.length; i++){
-            var shape = this._scene.shapes[i];
-            if(shape.isMouseOver()){
-                shape._onEvent('mousedown');
-            }
-       } 
-    });
-
-    this.canvas.addEventListener('mouseup', function (evt){
-       //navigate shapes to fake a mouseup event on it
-       for (var i=0; i<this._scene.shapes.length; i++){
-            var shape = this._scene.shapes[i];
-            if(shape.isMouseOver()){
-                shape._onEvent('mouseup');    
-            }
-       } 
-    });
-
-    this.canvas.addEventListener('click', function (evt){
-       //navigate shapes to fake a click event on it
-       for (var i=0; i<this._scene.shapes.length; i++){
-            var shape = this._scene.shapes[i];
-            if(shape.isMouseOver()){
-                shape._onEvent('click');    
-            }
-       } 
-    });
-
-    this.canvas.addEventListener('dblclick', function (evt){
-       //navigate shapes to fake a dblclick event on it
-       for (var i=0; i<this._scene.shapes.length; i++){
-            var shape = this._scene.shapes[i];
-            if(shape.isMouseOver()){
-                shape._onEvent('dblclick');    
-            }
-       } 
-    });
+    var events = ['mousedown', 'mouseup', 'click', 'dblclick'];
+    var j = 0;
+    var e;
+    for (j in events) {
+        e = events[j];
+        this.canvas.addEventListener(e, function (evt){
+           //navigate shapes to fake a mouseup event on it
+           for (var i=0; i<this._scene.shapes.length; i++){
+                var shape = this._scene.shapes[i];
+                if(shape.isMouseOver()){
+                    shape._onEvent(evt.type);    
+                }
+           } 
+        });
+    }
 };
 
 //append a shape to scene
