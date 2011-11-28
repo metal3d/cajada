@@ -68,12 +68,15 @@ var Scene = function (options) {
     this.mousepos = {};
     this.refreshing = false;
 
+    //a collection of functions to call BEFORE refreshing
+    //append function with "addEventListener('refresh',func)"
+    this._beforeRefresh = [];
 
     //record mouse position...
     this.canvas.addEventListener('mousemove',function(evt){
-       this._scene.mousepos ={x: evt.offsetX, y:evt.offsetY};
-       //a refresh is needed - some event may be used to change colors, positions...
-       this._scene.refresh(); 
+        this._scene.mousepos ={x: evt.offsetX, y:evt.offsetY};
+        //a refresh is needed - some event may be used to change colors, positions...
+        this._scene.refresh(); 
     });
 
     //events to handle on shapes
@@ -87,10 +90,20 @@ var Scene = function (options) {
            for (var i=0; i<this._scene.shapes.length; i++){
                 var shape = this._scene.shapes[i];
                 if(shape.isMouseOver()){
-                    shape._onEvent(evt.type);    
+                    shape._onEvent(evt);    
                 }
            } 
         });
+    }
+};
+
+/**
+* Add Event on the scene
+* only "refresh" is managed at this time
+*/
+Scene.prototype.addEventListener = function (name, func){
+    if (name=="refresh") {
+        this._beforeRefresh.push(func);
     }
 };
 
@@ -126,9 +139,15 @@ Scene.prototype.clear = function (){
 Scene.prototype.refresh = function (){
     if (this.refreshing) return this;//this prevent a very hight CPU usage...
 
+
     this.refreshing=true;
     this.clear();
-    for (var i=0; i < this.shapes.length; i++) {
+    //call function from eventListeners
+    for(var i=0; i<this._beforeRefresh.length; i++) {
+        var func = this._beforeRefresh[i];
+        func();
+    }
+    for (i=0; i < this.shapes.length; i++) {
         this.shapes[i].draw();
     }
     this.refreshing=false;
@@ -157,7 +176,7 @@ var Shapes = (function (){
     * Set the shape to be draggable
     */
     shape.prototype.setDraggable = function (state){
-        if (typeof(state)=="undefined" || state === false) {
+        if (typeof(state)!="undefined" && state === false) {
             this._draggable=false;
             return;
         } 
@@ -241,7 +260,8 @@ var Shapes = (function (){
     * when a event is fired, this tries to call functions
     * defined with listeners
     */
-    shape.prototype._onEvent = function (name){
+    shape.prototype._onEvent = function (evt){
+        var name = evt.type;
         for (var i=0; i<this._eventListeners.length; i++){
             var e = this._eventListeners[i];
             if(e.name == name) {
@@ -272,15 +292,21 @@ var Shapes = (function (){
         if(this.options.fill) this.scene.ctx.fill();
         if(this.options.stroke) this.scene.ctx.stroke();
         var pos = this.scene.mousepos;
-
+        var evt = {}; //a feked event
+        evt.target = this;
         if (this.scene.ctx.isPointInPath(pos.x,pos.y)) {
-            if (!this.isMouseOver())
-                this._onEvent('mouseover');
-            this._mouse_over = true;
+            if (!this.isMouseOver()){
+                evt.x = pos.x;
+                evt.y = pos.y;
+                evt.type="mouseover";
+                this._mouse_over = true;
+                this._onEvent(evt);
+            }
         } else {
             if (this.isMouseOver()) {
-                this._onEvent('mouseout');
+                evt.type="mouseout";
                 this._mouse_over=false;
+                this._onEvent(evt);
             }
         }
         this.scene.ctx.restore();
