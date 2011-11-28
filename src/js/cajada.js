@@ -231,7 +231,7 @@ var Shapes = (function (){
             _shape.dragging = true;
             var c = _shape.scene.getCanvas();
             var cl = c.getAttribute('class');
-            cl = (cl === null) ? "grab" : cl+" grab";
+            cl = ( cl === null || cl==='' ) ? "cajada-grab" : cl+" cajada-grab";
             c.setAttribute('class', cl);
         });
 
@@ -249,7 +249,7 @@ var Shapes = (function (){
             if (!_shape._draggable) return;
             _shape.dragging = false;    
             var c = _shape.scene.getCanvas();
-            var cl = c.getAttribute('class').replace(/\s*grab\s*/,'');
+            var cl = c.getAttribute('class').replace(/\s*cajada-grab\s*/,'');
             if (cl === '') c.removeAttribute('class');
             else c.setAttribute('class', cl);
         });
