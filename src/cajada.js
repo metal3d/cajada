@@ -76,7 +76,19 @@ var Scene = function (options) {
 
     //record mouse position...
     this.canvas.addEventListener('mousemove',function(evt){
-        this._scene.mousepos ={x: evt.offsetX, y:evt.offsetY};
+        var offset = {};
+        if (typeof(evt.offsetX) != "undefined") {
+            offset = {
+                x : evt.offsetX, y: evt.offsetY
+            };
+        } else {
+            offset = {
+                x: evt.pageX - this.offsetLeft,
+                y: evt.pageY - this.offsetTop
+            };
+        }
+
+        this._scene.mousepos =offset;
         //a refresh is needed - some event may be used to change colors, positions...
         this._scene.refresh(); 
     });
@@ -296,7 +308,7 @@ var Shapes = (function (){
         var pos = this.scene.mousepos;
         var evt = {}; //a faked event
         evt.target = this;
-        if (this.scene.ctx.isPointInPath(pos.x,pos.y)) {
+        if (this.scene.ctx.isPointInPath(pos.x,pos.y) ) {
             if (!this.isMouseOver()){
                 evt.x = pos.x;
                 evt.y = pos.y;
