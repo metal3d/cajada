@@ -49,11 +49,11 @@ function letsGo() {
     });
 
 
-    r1.addEventListener('click', function (){
+    r1.addEventListener('mousedown', function (){
         r1.zindex('up');
     });
 
-    r2.addEventListener('click', function (){
+    r2.addEventListener('mousedown', function (){
         r2.zindex('up');
     });
 
