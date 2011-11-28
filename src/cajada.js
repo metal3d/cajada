@@ -23,9 +23,11 @@
 /**
 * Cajada NameSpace
 * Working with cajada must be:
-* var scene = new cajada.Scene(canvas_element);
-* var rectangle = new cajada.Shapes.Rectangle(scene, options);
-* scene.refreh();
+    var scene = new cajada.Scene({
+        canvas : document.getElementById('canvas_element')
+    });
+    var rectangle = new cajada.Shapes.Rectangle(scene, options);
+    scene.refreh();
 * ...
 */
 var cajada = (function (){
@@ -292,7 +294,7 @@ var Shapes = (function (){
         if(this.options.fill) this.scene.ctx.fill();
         if(this.options.stroke) this.scene.ctx.stroke();
         var pos = this.scene.mousepos;
-        var evt = {}; //a feked event
+        var evt = {}; //a faked event
         evt.target = this;
         if (this.scene.ctx.isPointInPath(pos.x,pos.y)) {
             if (!this.isMouseOver()){
