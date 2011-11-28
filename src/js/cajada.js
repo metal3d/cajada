@@ -32,6 +32,27 @@
 */
 var cajada = (function (){
 
+
+/** Import CSS assets **/
+var scripts = document.getElementsByTagName("script");
+src = scripts[scripts.length-1].src;
+var path = src.split('/');
+delete (path[path.length-1]);
+path = path.join('/').replace(/\/+$/,'/');
+path = (path[path.length - 1] !== '/' ) ? path+'/' : path;
+path = path+"../";
+
+var head = document.getElementsByTagName("head")[0];       
+var cssNode = document.createElement('link');
+cssNode.type = 'text/css';
+cssNode.rel = 'stylesheet';
+cssNode.href = path+'asset/cajada.css';
+cssNode.media = 'screen';
+head.appendChild(cssNode);
+// asset/cajada.css added
+
+
+/** Begin library **/
 //local function to merge options
 function merge (defaultObject, toObject) {
     for (var attr in defaultObject) {
@@ -207,7 +228,11 @@ var Shapes = (function (){
             if (!_shape._draggable) return;
             _shape._mouse_origin = _shape.scene.mousepos;
             _shape._origin = [_shape.x, _shape.y];
-            _shape.dragging = true;    
+            _shape.dragging = true;
+            var c = _shape.scene.getCanvas();
+            var cl = c.getAttribute('class');
+            cl = (cl === null) ? "grab" : cl+" grab";
+            c.setAttribute('class', cl);
         });
 
         var c = this.scene.getCanvas();
@@ -223,6 +248,10 @@ var Shapes = (function (){
         this.addEventListener('mouseup', function (){
             if (!_shape._draggable) return;
             _shape.dragging = false;    
+            var c = _shape.scene.getCanvas();
+            var cl = c.getAttribute('class').replace(/\s*grab\s*/,'');
+            if (cl === '') c.removeAttribute('class');
+            else c.setAttribute('class', cl);
         });
     };
 
