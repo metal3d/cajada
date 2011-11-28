@@ -42,12 +42,19 @@ function letsGo() {
         r2.lastFill = r2.options.fillStyle;
         r2.options.fillStyle = "rgba(0,255,0,0.9)";
         c.refresh();
-        c.getCanvas().style.cursor = 'move';
     });
     r2.addEventListener('mouseout', function (){
         r2.options.fillStyle = r2.lastFill;
         c.refresh();
-        c.getCanvas().style.cursor = 'auto';
+    });
+
+
+    r1.addEventListener('click', function (){
+        r1.zindex('up');
+    });
+
+    r2.addEventListener('click', function (){
+        r2.zindex('up');
     });
 
     r1.setDraggable(true);

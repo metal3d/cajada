@@ -122,15 +122,19 @@ var Scene = function (options) {
         e = events[j];
         this.canvas.addEventListener(e, function (evt){
            //navigate shapes to fake a mouseup event on it
+           var upperShape = null;
            for (var i=0; i<this._scene.shapes.length; i++){
                 var shape = this._scene.shapes[i];
                 if(shape.isMouseOver()){
-                    shape._onEvent(evt);    
+                    upperShape = shape;
                 }
-           } 
+           }
+           if (upperShape !== null ) upperShape._onEvent(evt);    
         });
     }
+
 };
+
 
 /**
 * Add Event on the scene
@@ -198,6 +202,13 @@ var Shapes = (function (){
 
 
     /**
+    * index sorting function
+    */
+    function index_sorting(s1, s2) {
+        return s2.index<s1.index;
+    }
+
+    /**
     * Shape class - Parent of every shapes
     * @scope private
     */
@@ -205,6 +216,22 @@ var Shapes = (function (){
         this._eventListeners = [];
         this._mouse_over = false;
         this._draggable = null;
+        this._zindex = 0;
+    };
+
+    /**
+    * Move up/down shape on collection - that allows to set z-index simulation
+    */
+    shape.prototype.zindex = function (direction) {
+        var index = (direction == 'up') ? 0 : 1;
+        for (var i=0; i<this.scene.shapes.length; i++) {
+            if (this.scene.shapes[i] !== this) {
+                this.scene.shapes[i].index=index;
+                index++;
+            }
+        }
+        this.index = (direction == 'up' ) ? index : 0;
+        this.scene.shapes.sort(index_sorting);
     };
 
     /**
@@ -259,7 +286,7 @@ var Shapes = (function (){
     * Return true if mouse is over the shape
     */
     shape.prototype.isMouseOver = function (){
-        return this._mouse_over;    
+        return this._mouse_over;  
     };
 
     /**
