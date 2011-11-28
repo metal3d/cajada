@@ -20,10 +20,17 @@
 */
 
 
-
+/**
+* Cajada NameSpace
+* Working with cajada must be:
+* var scene = new cajada.Scene(canvas_element);
+* var rectangle = new cajada.Shapes.Rectangle(scene, options);
+* scene.refreh();
+* ...
+*/
 var cajada = (function (){
 
-//function to merge options
+//local function to merge options
 function merge (defaultObject, toObject) {
     for (var attr in defaultObject) {
         if(typeof(toObject[attr])=="undefined")
@@ -31,7 +38,10 @@ function merge (defaultObject, toObject) {
     }
 }
 
-//scene class
+/**
+* Cajada.Scene class
+* Container object to handle canvas and shapes 
+*/
 var Scene = function (options) {
         
     var canvas = null;
@@ -62,9 +72,11 @@ var Scene = function (options) {
     //record mouse position...
     this.canvas.addEventListener('mousemove',function(evt){
        this._scene.mousepos ={x: evt.offsetX, y:evt.offsetY};
-       this._scene.refresh();
+       //a refresh is needed - some event may be used to change colors, positions...
+       this._scene.refresh(); 
     });
 
+    //events to handle on shapes
     var events = ['mousedown', 'mouseup', 'click', 'dblclick'];
     var j = 0;
     var e;
@@ -82,18 +94,24 @@ var Scene = function (options) {
     }
 };
 
-//return attached canvas
+/**
+* Return the current canvas for this scene
+*/
 Scene.prototype.getCanvas = function() {
     return this.canvas;
 };
 
 
-//append a shape to scene
+/**
+* Append a Shape object to the scene
+*/
 Scene.prototype.append = function (shape){
     this.shapes.push(shape);
 };
 
-//clear canvas
+/**
+* Clear the canvas
+*/
 Scene.prototype.clear = function (){
     var ctx = this.ctx;
     ctx.moveTo(0,0);
@@ -102,7 +120,9 @@ Scene.prototype.clear = function (){
     return this;
 };
 
-//refresh canvas (redraw every shapes)
+/**
+* Refresh the canvas, that means: redraw everything
+*/
 Scene.prototype.refresh = function (){
     if (this.refreshing) return this;//this prevent a very hight CPU usage...
 
@@ -121,14 +141,21 @@ Scene.prototype.refresh = function (){
 var Shapes = (function (){
     //Shape interface that allows:
     // move, fill, stroke, styles...
+
+
+    /**
+    * Shape class - Parent of every shapes
+    * @scope private
+    */
     var shape = function () {
         this._eventListeners = [];
         this._mouse_over = false;
         this._draggable = null;
     };
 
-
-    //set this shape draggable
+    /**
+    * Set the shape to be draggable
+    */
     shape.prototype.setDraggable = function (state){
         if (typeof(state)=="undefined" || state === false) {
             this._draggable=false;
@@ -166,10 +193,18 @@ var Shapes = (function (){
         });
     };
 
+    /**
+    * Return true if mouse is over the shape
+    */
     shape.prototype.isMouseOver = function (){
         return this._mouse_over;    
     };
 
+    /**
+    * Shape constructor
+    * @param scene
+    * @param options
+    */
     shape.prototype.init = function(c, options) {
         this.scene = c;
         this.scene.append(this);
@@ -190,7 +225,9 @@ var Shapes = (function (){
         this.rotation = options.rotation;
     };
     
-    //faked events...
+    /**
+    * Fake an event
+    */
     shape.prototype.addEventListener = function (name, f){
         this._eventListeners.push({
             name: name,
@@ -199,8 +236,11 @@ var Shapes = (function (){
         return this;
     };
 
-    //when a event is fired, this tries to call functions
-    //defined with listeners
+    /**
+    * Called when an event is grabbed
+    * when a event is fired, this tries to call functions
+    * defined with listeners
+    */
     shape.prototype._onEvent = function (name){
         for (var i=0; i<this._eventListeners.length; i++){
             var e = this._eventListeners[i];
@@ -210,7 +250,9 @@ var Shapes = (function (){
         }     
     };
 
-    //begin a path to draw
+    /**
+    * Begin a path
+    */
     shape.prototype.begin = function (){
         this.scene.ctx.strokeStyle = this.options.strokeStyle;
         this.scene.ctx.fillStyle = this.options.fillStyle;
@@ -221,7 +263,10 @@ var Shapes = (function (){
         this.scene.ctx.rotate(this.rotation);
     };
 
-    //end path (restore context)
+
+    /**
+    * End a path, restore context etc...
+    */
     shape.prototype.end = function (){
 
         if(this.options.fill) this.scene.ctx.fill();
@@ -241,28 +286,44 @@ var Shapes = (function (){
         this.scene.ctx.restore();
     };
     
+    /**
+    * Move a shape by offset
+    * param: xoffset
+    * param: yoffset
+    */
     shape.prototype.move = function (x,y){
         this.x+=x;
         this.y+=y;
         return this;
     };
 
+    /**
+    * Fill shape with options.fillStyle
+    */
     shape.prototype.fill = function() {
         this.scene.ctx.fill();
         return this;
     };
 
+    /**
+    * Stroke a path with options.strokeStyle
+    */
     shape.prototype.stroke = function() {
         this.scene.ctx.stroke();
         return this;
     };
 
+    /**
+    * Circle Shape
+    */
     var Circle = function (scene, options){
     //TODO: set circle function    
     };
 
 
-    //Rect shape
+    /**
+    * Rectangle Shape
+    */
     Rect.prototype = new shape();
     Rect.prototype.constructor = Rect;
     function Rect (scene, options){
@@ -273,6 +334,9 @@ var Shapes = (function (){
         this.height = options.size[1];
     }
 
+    /**
+    * Draw the rectangle
+    */
     Rect.prototype.draw = function (){
         var ctx = this.scene.ctx;
         var width = this.width;
@@ -292,7 +356,9 @@ var Shapes = (function (){
     };
 
 
-    //Rounded Rect shape
+    /**
+    * Rounded corner Rectangle shape
+    */
     RoundedRect.prototype = new shape();
     RoundedRect.prototype.constructor = RoundedRect;
     function RoundedRect (scene, options){
@@ -308,7 +374,9 @@ var Shapes = (function (){
         this.radius = options.radius;
     }
 
-
+    /**
+    * Draw Rounded Rectangle shape
+    */
     RoundedRect.prototype.draw = function (){
         var ctx = this.scene.ctx;
         var width = this.width;
@@ -334,6 +402,12 @@ var Shapes = (function (){
         return this;
     };
     
+
+    /**
+    * Return the namespace Shape.Circle, Shape.Rect...
+    * As Shapes is in cajada namespace, call with
+    * cajada.Shape.XYZ
+    */
     return {
         Circle : Circle,    
         Rect   : Rect,
@@ -343,7 +417,9 @@ var Shapes = (function (){
 
 
 
-//return the full Package
+/**
+* Return cajada namespace cajada.Scene, cajada.Shapes...
+*/
 return {
     Scene: Scene,
     Shapes: Shapes
