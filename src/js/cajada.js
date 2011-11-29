@@ -330,7 +330,7 @@ var Shapes = (function (){
             stroke: true,
             fill: true
         }, options);
-        options.rotation/=360;
+        options.rotation*=(Math.PI/180);
         this.options = options;
         this.rotation = options.rotation;
     };
