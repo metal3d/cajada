@@ -217,6 +217,7 @@ var Shapes = (function (){
         this._mouse_over = false;
         this._draggable = null;
         this._zindex = 0;
+        this._custromDraw = [];
     };
 
     /**
@@ -262,6 +263,14 @@ var Shapes = (function (){
             c.setAttribute('class', cl);
         });
 
+        this.addEventListener('mouseover', function(){
+            if (!_shape._draggable) return;
+            var c = _shape.scene.getCanvas();
+            var cl = c.getAttribute('class');
+            cl = ( cl === null || cl==='' ) ? "cajada-grab" : cl+" cajada-grab";
+            c.setAttribute('class', cl);
+
+        });
         var c = this.scene.getCanvas();
 
         c.addEventListener('mousemove', function(){
@@ -275,6 +284,14 @@ var Shapes = (function (){
         this.addEventListener('mouseup', function (){
             if (!_shape._draggable) return;
             _shape.dragging = false;    
+            var c = _shape.scene.getCanvas();
+            var cl = c.getAttribute('class').replace(/\s*cajada-grab\s*/,'');
+            if (cl === '') c.removeAttribute('class');
+            else c.setAttribute('class', cl);
+        });
+
+        this.addEventListener('mouseout', function (){
+            if (!_shape._draggable) return;
             var c = _shape.scene.getCanvas();
             var cl = c.getAttribute('class').replace(/\s*cajada-grab\s*/,'');
             if (cl === '') c.removeAttribute('class');
@@ -341,6 +358,30 @@ var Shapes = (function (){
     };
 
     /**
+    * Append custom draw methods
+    */
+    shape.prototype.addCustomDraw = function (func){
+        this._custromDraw.push(func);
+    };
+
+    /**
+    * Call custom draw methods
+    */
+    shape.prototype._customDraw = function (func){
+        var f;
+        for (var i=0; i < this._custromDraw.length; i++) {
+            this.scene.ctx.save();
+            this.scene.ctx.translate(this.x,this.y);
+            this.scene.ctx.moveTo(0, 0);
+            this.scene.ctx.rotate(this.rotation);
+            f = this._custromDraw[i];
+            f();
+            this.scene.ctx.restore();
+        }
+    };
+
+
+    /**
     * Begin a path
     */
     shape.prototype.begin = function (){
@@ -361,6 +402,10 @@ var Shapes = (function (){
 
         if(this.options.fill) this.scene.ctx.fill();
         if(this.options.stroke) this.scene.ctx.stroke();
+
+        //now, append custom draws
+        this._customDraw();
+
         var pos = this.scene.mousepos;
         var evt = {}; //a faked event
         evt.target = this;
@@ -505,6 +550,7 @@ var Shapes = (function (){
     * cajada.Shape.XYZ
     */
     return {
+        Base: shape,
         Circle : Circle,    
         Rect   : Rect,
         RoundedRect : RoundedRect

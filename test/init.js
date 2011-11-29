@@ -1,3 +1,27 @@
+//Custom shape, extends a shape
+/*
+(function (){
+    myShape.prototype = new cajada.Shapes.Base();
+    myShape.prototype.constructor = function (c, options){
+        cajada.Shapes.Rect(c, options);
+    };
+
+    myShape.prototype.draw = function () {
+        cajada.Shapes.RoundRect.draw();
+        this.begin();
+        this.scene.ctx.fillStyle = "bkack";
+        this.scene.ctx.filleText(this.x, this.y);
+        this.end();
+        return this;
+    };
+
+    var m = new myShape(c, {
+        at: [150,200]
+    });
+    console.log(myShape);
+})();
+*/
+  
 function $(element) {
     return document.getElementById(element);
 }
@@ -21,6 +45,15 @@ function letsGo() {
         strokeStyle: "red",
         rotation: 90
     });
+
+    r2.addCustomDraw(function (){
+        var ctx = r2.scene.ctx;
+        ctx.font="10pt Sans";
+        ctx.textAlign="center";
+        ctx.fillStyle="black";
+        ctx.fillText('Youpi', 0, 0);
+    });
+
     c.addEventListener('refresh', function (){
         var ctx = c.ctx;
         ctx.save();
@@ -63,6 +96,7 @@ function letsGo() {
     c.refresh();
     console.log(r2);
     //d(c,r1,0,0,0,r2);
+
 }
    
 function d (c,r1,t,X,Y,r2) {
