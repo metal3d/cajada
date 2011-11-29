@@ -126,6 +126,8 @@ var Scene = function (options) {
            for (var i=0; i<this._scene.shapes.length; i++){
                 var shape = this._scene.shapes[i];
                 if(shape.isMouseOver()){
+                    evt.preventDefault();
+                    evt.stopPropagation();
                     upperShape = shape;
                 }
            }
@@ -252,23 +254,31 @@ var Shapes = (function (){
 
         var _shape = this;
 
+
+        var setDragStyle = function (state){
+            var c = _shape.scene.getCanvas();
+            var cl = c.getAttribute('class');
+            if (state) {
+                cl = ( cl === null || cl==='' ) ? "cajada-grab" : cl+" cajada-grab";
+            } else {
+                cl = c.getAttribute('class').replace(/\s*cajada-grab\s*/,'');
+            }
+            if (cl === '') c.removeAttribute('class');
+            else c.setAttribute('class', cl);
+            
+        };
+
         this.addEventListener('mousedown', function (){
             if (!_shape._draggable) return;
             _shape._mouse_origin = _shape.scene.mousepos;
             _shape._origin = [_shape.x, _shape.y];
             _shape.dragging = true;
-            var c = _shape.scene.getCanvas();
-            var cl = c.getAttribute('class');
-            cl = ( cl === null || cl==='' ) ? "cajada-grab" : cl+" cajada-grab";
-            c.setAttribute('class', cl);
+            setDragStyle(true);
         });
 
         this.addEventListener('mouseover', function(){
             if (!_shape._draggable) return;
-            var c = _shape.scene.getCanvas();
-            var cl = c.getAttribute('class');
-            cl = ( cl === null || cl==='' ) ? "cajada-grab" : cl+" cajada-grab";
-            c.setAttribute('class', cl);
+            setDragStyle(true);
 
         });
         var c = this.scene.getCanvas();
@@ -284,18 +294,12 @@ var Shapes = (function (){
         this.addEventListener('mouseup', function (){
             if (!_shape._draggable) return;
             _shape.dragging = false;    
-            var c = _shape.scene.getCanvas();
-            var cl = c.getAttribute('class').replace(/\s*cajada-grab\s*/,'');
-            if (cl === '') c.removeAttribute('class');
-            else c.setAttribute('class', cl);
+            setDragStyle(false);
         });
 
         this.addEventListener('mouseout', function (){
             if (!_shape._draggable) return;
-            var c = _shape.scene.getCanvas();
-            var cl = c.getAttribute('class').replace(/\s*cajada-grab\s*/,'');
-            if (cl === '') c.removeAttribute('class');
-            else c.setAttribute('class', cl);
+            setDragStyle(false);
         });
     };
 
@@ -353,6 +357,7 @@ var Shapes = (function (){
             var e = this._eventListeners[i];
             if(e.name == name) {
                 e.func(this);
+                this.scene.refresh();
             }
         }     
     };
