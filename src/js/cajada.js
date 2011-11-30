@@ -155,6 +155,12 @@ Scene.prototype.getCanvas = function() {
     return this.canvas;
 };
 
+/**
+* Return the current canvas for this scene
+*/
+Scene.prototype.getContext = function() {
+    return this.ctx;
+};
 
 /**
 * Append a Shape object to the scene
@@ -319,17 +325,33 @@ var Shapes = (function (){
         this.scene = c;
         this.scene.append(this);
 
+        if (typeof(options.shadow)!="undefined") {
+            merge({
+                shadow: {
+                    x: 0,
+                    y: 0,
+                    color: "rgba(0,0,0,0.8)",
+                    blur: 8
+                }
+                
+            }, options);
+        }
+        else {
+            options.shadow = false;
+        }
+
         merge ({
             at: [0,0],
             rotation: 0.0,
             width:0,
             height:0,
-            fillStyle: "#EEE",
+            fillStyle: "#FFF",
             strokeStyle: "#000",
             lineWidth:2,
             stroke: true,
             fill: true
         }, options);
+
         options.rotation*=(Math.PI/180);
         this.options = options;
         this.rotation = options.rotation;
@@ -390,13 +412,21 @@ var Shapes = (function (){
     * Begin a path
     */
     shape.prototype.begin = function (){
-        this.scene.ctx.strokeStyle = this.options.strokeStyle;
-        this.scene.ctx.fillStyle = this.options.fillStyle;
-        this.scene.ctx.lineWidth = this.options.lineWidth;
-        this.scene.ctx.save();
-        this.scene.ctx.translate(this.x,this.y);
-        this.scene.ctx.moveTo(0, 0);
-        this.scene.ctx.rotate(this.rotation);
+        var ctx = this.scene.getContext();
+
+        ctx.strokeStyle = this.options.strokeStyle;
+        ctx.fillStyle = this.options.fillStyle;
+        ctx.lineWidth = this.options.lineWidth;
+        if ( this.options.shadow !== false ) {
+            ctx.shadowOffsetX = this.options.shadow.x;
+            ctx.shadowOffsetY = this.options.shadow.Y;
+            ctx.shadowBlur = this.options.shadow.blur;
+            ctx.shadowColor = this.options.shadow.color;
+        }
+        ctx.save();
+        ctx.translate(this.x,this.y);
+        ctx.moveTo(0, 0);
+        ctx.rotate(this.rotation);
     };
 
 
@@ -405,16 +435,21 @@ var Shapes = (function (){
     */
     shape.prototype.end = function (){
 
-        if(this.options.fill) this.scene.ctx.fill();
-        if(this.options.stroke) this.scene.ctx.stroke();
 
+        var ctx = this.scene.getContext();
+        if(this.options.stroke) ctx.stroke();
+        if(this.options.fill) ctx.fill();
+        ctx.shadowOffsetX = null;
+        ctx.shadowOffsetY =null;
+        ctx.shadowBlur = null;
+        ctx.shadowColor = null;
         //now, append custom draws
         this._customDraw();
 
         var pos = this.scene.mousepos;
         var evt = {}; //a faked event
         evt.target = this;
-        if (this.scene.ctx.isPointInPath(pos.x,pos.y) ) {
+        if (ctx.isPointInPath(pos.x,pos.y) ) {
             if (!this.isMouseOver()){
                 evt.x = pos.x;
                 evt.y = pos.y;
@@ -429,7 +464,7 @@ var Shapes = (function (){
                 this._onEvent(evt);
             }
         }
-        this.scene.ctx.restore();
+        ctx.restore();
     };
     
     /**
