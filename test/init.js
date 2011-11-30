@@ -21,7 +21,13 @@ function letsGo() {
     var r1 = new cajada.Shapes.Rect(c, {
         at : [90,30],
         size: [150,80],
-        strokeStyle:"blue"
+        strokeStyle:"blue",
+        shadow: {
+            x: 4,
+            y: 4,
+            blur: 8,
+            color: "rgba(0,0,0,0.5)"
+        }
     });
     
     //a rounded rectangle
