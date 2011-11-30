@@ -264,14 +264,13 @@ var Shapes = (function (){
         var setDragStyle = function (state){
             var c = _shape.scene.getCanvas();
             var cl = c.getAttribute('class');
-
+            var r = /\s*cajada-grab\s*/;
             if (cl===null) cl='';
 
-            console.log(cl.search(/\s*cajada-grab\s*/));
-            if (state && cl.search(/\s*cajada-grab\s*/)<0) {
+            if (state && cl.search(r)<0) {
                 cl = ( cl==='' ) ? "cajada-grab" : cl+" cajada-grab";
             } else if(!state) {
-                cl = cl.replace(/\s*cajada-grab\s*/,'');
+                cl = cl.replace(r,'');
             }
             if (cl === '') c.removeAttribute('class');
             else c.setAttribute('class', cl);
@@ -304,7 +303,7 @@ var Shapes = (function (){
         this.addEventListener('mouseup', function (){
             if (!_shape._draggable) return;
             _shape.dragging = false;    
-            setDragStyle(false);
+            setDragStyle(true);
         });
 
         this.addEventListener('mouseout', function (){
