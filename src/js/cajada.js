@@ -264,10 +264,14 @@ var Shapes = (function (){
         var setDragStyle = function (state){
             var c = _shape.scene.getCanvas();
             var cl = c.getAttribute('class');
-            if (state) {
-                cl = ( cl === null || cl==='' ) ? "cajada-grab" : cl+" cajada-grab";
-            } else {
-                cl = c.getAttribute('class').replace(/\s*cajada-grab\s*/,'');
+
+            if (cl===null) cl='';
+
+            console.log(cl.search(/\s*cajada-grab\s*/));
+            if (state && cl.search(/\s*cajada-grab\s*/)<0) {
+                cl = ( cl==='' ) ? "cajada-grab" : cl+" cajada-grab";
+            } else if(!state) {
+                cl = cl.replace(/\s*cajada-grab\s*/,'');
             }
             if (cl === '') c.removeAttribute('class');
             else c.setAttribute('class', cl);
