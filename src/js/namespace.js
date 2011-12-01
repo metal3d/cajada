@@ -40,11 +40,20 @@ var cajada = (function (){
         }
     }
 
+    var inherit = function(Base,func){
+        return (function (){
+            func.prototype = new Base();
+            func.prototype.constructor = func;
+            return func;
+        })();
+    };
+
     /**
     * Return cajada namespace cajada.Scene, cajada.Shapes...
     */
     return {
-        merge: merge
+        merge: merge,
+        Extends: inherit
     };
 
 //End of anonymous call

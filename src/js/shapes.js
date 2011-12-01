@@ -30,7 +30,7 @@ cajada.Shapes =  (function (){
     * index sorting function
     */
     function index_sorting(s1, s2) {
-        return s2.index<s1.index;
+        return s2._zindex<s1._zindex;
     }
 
     /**
@@ -38,11 +38,6 @@ cajada.Shapes =  (function (){
     * @scope private
     */
     var shape = function () {
-        this._eventListeners = [];
-        this._mouse_over = false;
-        this._draggable = null;
-        this._zindex = 0;
-        this._custromDraw = [];
     };
 
     /**
@@ -51,12 +46,12 @@ cajada.Shapes =  (function (){
     shape.prototype.zindex = function (direction) {
         var index = (direction == 'up') ? 0 : 1;
         for (var i=0; i<this.scene.shapes.length; i++) {
-            if (this.scene.shapes[i] !== this) {
-                this.scene.shapes[i].index=index;
+            if (this.scene.shapes[i]._id !== this._id) {
+                this.scene.shapes[i]._zindex=index;
                 index++;
             }
         }
-        this.index = (direction == 'up' ) ? index : 0;
+        this._zindex = (direction == 'up' ) ? index : 0;
         this.scene.shapes.sort(index_sorting);
     };
 
@@ -64,14 +59,16 @@ cajada.Shapes =  (function (){
     * Set the shape to be draggable
     */
     shape.prototype.setDraggable = function (state){
-        if (typeof(state)!="undefined" && state === false) {
+        if ((typeof(state)!="undefined" && state !==true ) || state === false) {
             this._draggable=false;
             return;
         } 
         
         var addevent = false;
-        if (this._draggable === null) addevent=true;
-        this._draggable = true;
+        if (this._draggable === null) {
+            addevent=true;
+            this._draggable = true;
+        }
         
         if (!addevent) return;
 
@@ -141,7 +138,14 @@ cajada.Shapes =  (function (){
     * @param options
     */
     shape.prototype.init = function(c, options) {
+
         this.scene = c;
+        this._eventListeners = [];
+        this._mouse_over = false;
+        this._draggable = null;
+        this._zindex = 0;
+        this._custromDraw = [];
+        this._id = "cajada-shape-" + Date.now() + "-" +parseInt(Math.random()*1000);
         this.scene.append(this);
 
         if (typeof(options.shadow)!="undefined") {
@@ -331,6 +335,7 @@ cajada.Shapes =  (function (){
     Rect.prototype = new shape();
     Rect.prototype.constructor = Rect;
     function Rect (scene, options){
+   //     if(!scene || !options) return;
         this.init(scene, options);
 
     }
@@ -363,6 +368,7 @@ cajada.Shapes =  (function (){
     RoundedRect.prototype = new shape();
     RoundedRect.prototype.constructor = RoundedRect;
     function RoundedRect (scene, options){
+        if(!scene || !options) return;
         this.init(scene, options);
         merge({
             radius: 8

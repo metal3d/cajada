@@ -76,22 +76,21 @@ cajada.Scene =  function (options) {
 
     //events to handle on shapes
     var events = ['mousedown', 'mouseup', 'click', 'dblclick'];
-    var j = 0;
-    var e;
-    for (j in events) {
-        e = events[j];
+    for (var j=0; j<events.length; j++) {
+        var e = events[j];
         this.canvas.addEventListener(e, function (evt){
-           //navigate shapes to fake a mouseup event on it
+           //navigate shapes to fake an event on it
            var upperShape = null;
            for (var i=0; i<this._scene.shapes.length; i++){
                 var shape = this._scene.shapes[i];
                 if(shape.isMouseOver()){
-                    evt.preventDefault();
-                    evt.stopPropagation();
                     upperShape = shape;
                 }
            }
-           if (upperShape !== null ) upperShape._onEvent(evt);    
+           if (upperShape !== null ) {
+                upperShape._onEvent(evt);    
+                evt.stopPropagation();
+            }
         });
     }
 
