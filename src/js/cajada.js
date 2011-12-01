@@ -19,6 +19,24 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 (function (){
+
+    /**
+     * Load needed js scripts
+     */
+    function importJS(imports, i){
+        var jsNode = document.createElement('script');
+        jsNode.type="text/javascript";
+        jsNode.src=jspath + imports[i]+".js" ;
+        head.appendChild(jsNode);
+        if (i >= imports.length -1 ) return;
+        i++;
+
+        //this is required to have last js namespace overloaded
+        jsNode.onload = function() {
+            importJS(imports,i);  
+        };
+    }
+
     var head = document.getElementsByTagName("head")[0];       
 
     /** Import assets **/
@@ -30,14 +48,9 @@
     path = (path[path.length - 1] !== '/' ) ? path+'/' : path;
 
     var jspath = path;
-    var imports = ['namespace', 'scene', 'shapes'];
+    var imports = ['namespace', 'scene', 'shapes','shapes/rect','shapes/roundedrect'];
     //import js files
-    for (var i in imports) {
-        var jsNode = document.createElement('script');
-        jsNode.type="text/javascript";
-        jsNode.src=jspath + imports[i]+".js" ;
-        head.appendChild(jsNode);
-    }
+    importJS(imports, 0);
 
     //now CSS
     //jump one directory up

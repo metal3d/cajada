@@ -145,7 +145,7 @@ cajada.Shapes =  (function (){
         this._draggable = null;
         this._zindex = 0;
         this._custromDraw = [];
-        this._id = "cajada-shape-" + Date.now() + "-" +parseInt(Math.random()*1000);
+        this._id = "cajada-shape-" + Date.now() + "-" + parseInt(Math.random(Date.now())*1000,10);
         this.scene.append(this);
 
         if (typeof(options.shadow)!="undefined") {
@@ -329,81 +329,7 @@ cajada.Shapes =  (function (){
     };
 
 
-    /**
-    * Rectangle Shape
-    */
-    Rect.prototype = new shape();
-    Rect.prototype.constructor = Rect;
-    function Rect (scene, options){
-   //     if(!scene || !options) return;
-        this.init(scene, options);
-
-    }
-
-    /**
-    * Draw the rectangle
-    */
-    Rect.prototype.draw = function (){
-        var ctx = this.scene.ctx;
-        var width = this.width;
-        var height = this.height;
     
-        this.begin();
-        ctx.translate(-width/2, -height/2);
-        ctx.beginPath();
-        ctx.moveTo(0,0);
-        ctx.lineTo(width,0);
-        ctx.lineTo(width,height);
-        ctx.lineTo(0,height);
-        ctx.closePath();
-        ctx.restore();
-        this.end();
-        return this;
-    };
-
-
-    /**
-    * Rounded corner Rectangle shape
-    */
-    RoundedRect.prototype = new shape();
-    RoundedRect.prototype.constructor = RoundedRect;
-    function RoundedRect (scene, options){
-        if(!scene || !options) return;
-        this.init(scene, options);
-        merge({
-            radius: 8
-        }, options);
-
-        this.radius = options.radius;
-    }
-
-    /**
-    * Draw Rounded Rectangle shape
-    */
-    RoundedRect.prototype.draw = function (){
-        var ctx = this.scene.ctx;
-        var width = this.width;
-        var height = this.height;
-        var radius = this.radius;
-
-        this.begin();
-        ctx.translate(-width/2, -height/2);
-        ctx.moveTo(0,0);
-        
-        ctx.beginPath();
-        ctx.moveTo(0,radius);
-        ctx.lineTo(0,height-radius);
-        ctx.quadraticCurveTo(0,height,radius,height);
-        ctx.lineTo(width-radius,height);
-        ctx.quadraticCurveTo(width,height,width,height-radius);
-        ctx.lineTo(width,radius);
-        ctx.quadraticCurveTo(width,0,width-radius,0);
-        ctx.lineTo(radius,0);
-        ctx.quadraticCurveTo(0,0,0,radius);
-        ctx.restore();
-        this.end();
-        return this;
-    };
     
 
     /**
@@ -412,10 +338,7 @@ cajada.Shapes =  (function (){
     * cajada.Shape.XYZ
     */
     return {
-        Base: shape,
-        Circle : Circle,    
-        Rect   : Rect,
-        RoundedRect : RoundedRect
+        Base: shape
     };
 })(); //End Shapes NameSpace
 

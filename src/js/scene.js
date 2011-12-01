@@ -89,6 +89,7 @@ cajada.Scene =  function (options) {
            }
            if (upperShape !== null ) {
                 upperShape._onEvent(evt);    
+                evt.preventDefault();
                 evt.stopPropagation();
             }
         });
