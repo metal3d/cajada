@@ -297,7 +297,6 @@ var Shapes = (function (){
             if (!_shape.dragging) return;
             _shape.x = _shape._origin[0] + c._scene.mousepos.x - _shape._mouse_origin.x;
             _shape.y = _shape._origin[1] + c._scene.mousepos.y - _shape._mouse_origin.y;
-            c._scene.refresh();
         });
 
         this.addEventListener('mouseup', function (){
