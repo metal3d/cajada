@@ -49,7 +49,6 @@ cajada.Scene =  function (options) {
     this.shapes = [];
     this.canvas.mousepos = {x:null, y:null};
     this.mousepos = {};
-    this.refreshing = false;
 
     //a collection of functions to call BEFORE refreshing
     //append function with "addEventListener('refresh',func)"
@@ -144,10 +143,7 @@ cajada.Scene.prototype.clear = function (){
 * Refresh the canvas, that means: redraw everything
 */
 cajada.Scene.prototype.refresh = function (){
-    if (this.refreshing) return this;//this prevent a very hight CPU usage...
 
-
-    this.refreshing=true;
     this.clear();
     //call function from eventListeners
     for(var i=0; i<this._beforeRefresh.length; i++) {
@@ -157,7 +153,6 @@ cajada.Scene.prototype.refresh = function (){
     for (i=0; i < this.shapes.length; i++) {
         this.shapes[i].draw();
     }
-    this.refreshing=false;
     return this;
 };
 //end Scene Class
