@@ -57,7 +57,6 @@ cajada.Shapes.RoundedRect = (function (){
         ctx.quadraticCurveTo(width,0,width-radius,0);
         ctx.lineTo(radius,0);
         ctx.quadraticCurveTo(0,0,0,radius);
-        ctx.restore();
         this.end();
         return this;
     };

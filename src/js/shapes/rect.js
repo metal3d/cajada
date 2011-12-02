@@ -28,7 +28,6 @@ cajada.Shapes.Rect = (function (){
         ctx.lineTo(width,height);
         ctx.lineTo(0,height);
         ctx.closePath();
-        ctx.restore();
         this.end();
         return this;
     };
