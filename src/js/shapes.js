@@ -321,16 +321,6 @@ cajada.Shapes =  (function (){
         return this;
     };
 
-    /**
-    * Circle Shape
-    */
-    var Circle = function (scene, options){
-    //TODO: set circle function    
-    };
-
-
-    
-    
 
     /**
     * Return the namespace Shape.Circle, Shape.Rect...
