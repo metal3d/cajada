@@ -87,6 +87,8 @@ function letsGo() {
     r1.setDraggable(true);
     r2.setDraggable();
 
+
+
     //maybe nested
     c.refresh();
 
