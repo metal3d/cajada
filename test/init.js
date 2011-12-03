@@ -45,7 +45,8 @@ function letsGo() {
         ctx.font="10pt Sans";
         ctx.textAlign="center";
         ctx.fillStyle="black";
-        ctx.fillText('Youpi', 0, 0); // 0,0 coord because context is translate to the center of shape
+        // 0,0 coord because context is translate to the center of shape
+        ctx.fillText('Hello !', 0, 0); 
     });
 
     //when canvas is refreshed, draw a line beetween r1 and r2
@@ -105,6 +106,15 @@ function letsGo() {
 
     circle.addEventListener('mousedown', function (){
         circle.zindex('up');
+    });
+
+
+    //an image...
+    var img = new cajada.Shapes.Image(c, {
+        src : '../logo.png',
+        at  : [250,190],
+//        crop: [80,90] 
+        size: [null,120]
     });
 
     //maybe nested

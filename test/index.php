@@ -8,17 +8,36 @@
         body {
             font-family: Sans;
             font-size: 0.85em;
+            background: #AAA
         }
         body > div {
-            display: table
+            margin: 0 auto;
+            width: 700px;
+            padding: 1em 0 0 0;
+            background: #EFEFEF;
         }
         section {
-            display: table-cell;
-            vertical-align: top
+            background: white;
+            width: 640px;
+            margin: 1em auto;
+            padding: 5px;
+            -webkit-border-radius: 0.5em;
+            -webkit-box-shadow: 0 0 8px rgba(0,0,0,0.3);
+            -moz-border-radius: 0.5em;
+            -moz-box-shadow: 0 0 8px rgba(0,0,0,0.3);
         }
+        section#explanation {
+                
+        }
+
         pre,
         section p {
             padding: 0 5px;
+        }
+        div.highlight {
+            background: rgb(239, 239, 239);
+            width: 600px;
+            padding: 0.3em;
         }
 <?php
 echo `pygmentize -S default -f html`;
@@ -26,12 +45,7 @@ echo `pygmentize -S default -f html`;
     </style>
 </head>
     <body>
-        <div style="display: table">
-            <section>
-                <canvas id="board" width="650" height="450" style="border: 1px solid red">
-                    Your browser doesn't support canvas tag, please use Firefox, Chromium, Google Chrome, Safari... to see this page working
-                </canvas>
-            </section>
+        <div>
             <section id="explanation">
                 <img src="../logo.png" />
                 <article>
@@ -44,15 +58,15 @@ echo `pygmentize -S default -f html`;
                 <p>
                 Take a look on the github repository : <a href="https://github.com/metal3d/cajada">https://github.com/metal3d/cajada</a> (see developement branch);
                 </p>
-                <p>
-                    3 Last development logs:
-                    <pre>
-<?php echo `git log -n3`; ?>
-                    </pre>
-                </p>
                 </article>
             </section>
-        </div>
+            <section>
+                <p>A simple example</p>
+                <canvas id="board" width="650" height="450" >
+                    Your browser doesn't support canvas tag, please use Firefox, Chromium, Google Chrome, Safari... to see this page working
+                </canvas>
+            </section>
+            <section>
 <p>
 This is the example code to create above canvas:
 </p>
@@ -63,5 +77,15 @@ This is the example code to create above canvas:
 ?>
 
 </code></pre>
+</section>
+<section>
+                <p>
+                    3 Last development logs:
+                    <pre>
+<?php echo `git log -n3`; ?>
+                    </pre>
+                </p>
+</section>
+</div>
     </body>
 </html>
