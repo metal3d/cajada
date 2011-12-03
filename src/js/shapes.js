@@ -241,6 +241,7 @@ cajada.Shapes =  (function (){
     shape.prototype.begin = function (){
         var ctx = this.scene.getContext();
 
+        ctx.save();
         ctx.strokeStyle = this.options.strokeStyle;
         ctx.fillStyle = this.options.fillStyle;
         ctx.lineWidth = this.options.lineWidth;
@@ -250,7 +251,6 @@ cajada.Shapes =  (function (){
             ctx.shadowBlur = this.options.shadow.blur;
             ctx.shadowColor = this.options.shadow.color;
         }
-        ctx.save();
         ctx.translate(this.x,this.y);
         ctx.moveTo(0, 0);
         ctx.rotate(this.rotation);
@@ -271,6 +271,8 @@ cajada.Shapes =  (function (){
         ctx.shadowBlur = null;
         ctx.shadowColor = null;
         //now, append custom draws
+        ctx.restore();
+        ctx.save();
         this._customDraw();
 
         var pos = this.scene.mousepos;
