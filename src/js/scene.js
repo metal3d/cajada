@@ -67,11 +67,10 @@ cajada.Scene =  function (options) {
                 y: evt.pageY - this.offsetTop
             };
         }
-
         this._scene.mousepos =offset;
         //a refresh is needed - some event may be used to change colors, positions...
         this._scene.refresh(); 
-    });
+    },true);
 
     //events to handle on shapes
     var events = ['mousedown', 'mouseup', 'click', 'dblclick'];
@@ -91,7 +90,7 @@ cajada.Scene =  function (options) {
                 evt.preventDefault();
                 evt.stopPropagation();
             }
-        });
+        }, true);
     }
 
 };
