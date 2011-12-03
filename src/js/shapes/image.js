@@ -72,7 +72,7 @@ cajada.Shapes.Image = (function(){
              }
              self.loaded = true;
              self.draw();
-        });
+        }, true);
         this.file.src = options.src;
         this.src = options.src;
         this.resample = options.resample;
