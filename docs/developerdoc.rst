@@ -100,3 +100,11 @@ License to set
 --------------
 
 CaJaDa is LGPL v3 licensed. Please, accept to code on this license and use the same header as mine (you can add your name on mine if you modified my code, set yours on your own code, dont add mine - I will add my name if I modify your code). LGPL v3 is probably the better choice for me to protect our development and let other to use it without restriction. If you want discuss this, I'm open to speak about.
+
+If you're (as myself) a vim user, you can append header at top of your file whith this command:
+
+::
+   
+   :0r docs/header.template
+
+This will read docs/header.template and append it at line "0"
