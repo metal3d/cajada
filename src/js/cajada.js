@@ -48,7 +48,7 @@
     path = (path[path.length - 1] !== '/' ) ? path+'/' : path;
 
     var jspath = path;
-    var imports = ['namespace', 'scene', 'shapes','shapes/rect','shapes/roundedrect'];
+    var imports = ['namespace', 'scene', 'shapes','shapes/rect','shapes/roundedrect', 'shapes/circle'];
     //import js files
     importJS(imports, 0);
 
