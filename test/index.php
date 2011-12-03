@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" itemscope itemtype="http://schema.org/Product">
 <head>
-    <title>Test Canvas</title>
+    <title>CaJaDa</title>
     <meta itemprop="name" content="Cajada">
     <meta itemprop="description" content="CaJaDa allows you to set object in a canvas tag and add some events as &quot;mouse move, click, mouse over...&quot;. The library is pretty simple to use.">
     <meta itemprop="image" content="http://www.metal3d.org/cajada/logo.png">
