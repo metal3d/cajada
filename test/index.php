@@ -7,9 +7,9 @@
     <meta itemprop="image" content="http://cajada.net/logo.png">
     <script type="text/javascript" src="../src/js/cajada.js"></script>
     <script type="text/javascript" src="init.js"></script>
-    <style type="">
+    <style type="text/css">
         body {
-            font-family: Sans;
+            font-family: Arial, Sans;
             font-size: 0.85em;
             background: #AAA;
             margin: 0;
@@ -25,10 +25,14 @@
             width: 640px;
             margin: 1em auto;
             padding: 5px;
+            -o-border-radius: 0.5em;
+            -o-box-shadow: 0 0 8px rgba(0,0,0,0.3);
             -webkit-border-radius: 0.5em;
             -webkit-box-shadow: 0 0 8px rgba(0,0,0,0.3);
             -moz-border-radius: 0.5em;
             -moz-box-shadow: 0 0 8px rgba(0,0,0,0.3);
+            border-radius: 0.5em;
+            box-shadow: 0 0 8px rgba(0,0,0,0.3);
         }
         section#explanation {
                 
