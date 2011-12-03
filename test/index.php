@@ -11,7 +11,7 @@
             background: #AAA;
             margin: 0;
         }
-        body > div {
+        body > div#container {
             margin: 0 auto;
             width: 700px;
             padding: 1em 0 0 0;
@@ -49,7 +49,7 @@ echo `pygmentize -S default -f html`;
     </style>
 </head>
     <body>
-        <div>
+        <div id="container">
             <section id="explanation">
                 <header>
                 <img src="../logo.png" />
