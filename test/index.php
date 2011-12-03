@@ -57,7 +57,7 @@ echo `pygmentize -S default -f html`;
                 <header>
                 <img src="../logo.png" />
                 <br />
-                <div class="g-plusone" data-size="medium"></div>
+                <div class="g-plusone" data-size="medium" data-href="http://cajada.metal3d.org"></div>
                 <script type="text/javascript">
                   (function() {
                     var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
