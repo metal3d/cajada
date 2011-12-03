@@ -89,6 +89,24 @@ function letsGo() {
 
 
 
+    //apend a circle
+    var circle = new cajada.Shapes.Circle(c, {
+        fillStyle: "blue",
+        strokeStyle: 'black',
+        radius: '25',
+        at: [230,110],
+        shadow: {
+            x: 0,
+            y: 0,
+            blur: 8,
+            color: "rgba(0,0,0,0.5)" 
+        }
+    });
+
+    circle.addEventListener('mousedown', function (){
+        circle.zindex('up');
+    });
+
     //maybe nested
     c.refresh();
 
