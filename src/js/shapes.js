@@ -19,8 +19,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var cajada = cajada || {};
-
 cajada.Shapes =  (function (){
     //Shape interface that allows:
     // move, fill, stroke, styles...
