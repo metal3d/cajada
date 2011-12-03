@@ -25,18 +25,51 @@ cajada.Shapes.Image = (function(){
    IImage.prototype.constructor = IImage;
    function IImage (scene, options){
         if (typeof(options.size) == "undefined")
-            options.size = [0, 0]; 
+            options.size = [null, null]; 
         this.init(scene, options);
         cajada.merge({
             src: null,
             resample: false,
-            size: [0,0]
+            crop: false,
+            originalSize : []
         }, options);
         this.loaded = false;
 
         this.file = new Image();
         var self = this;
         this.file.addEventListener('load', function (){
+             self.width  = self.file.width;
+             self.height = self.file.height;
+             self.originalSize = [self.width, self.height];
+             
+             //if crop, reset size
+             if (self.options.crop.length == 4) {
+                    //crop is [sx, sy, swidth, sheight] so we've got final size
+                    self.width = self.options.crop[2];
+                    self.height = self.options.crop[3];
+             }
+             //crop size isn't given, we must get the final size
+             if (self.options.crop.length == 2) {
+                    //crop is [sx, sy]
+                    self.options.crop[2] = self.width  - self.options.crop[0];
+                    self.options.crop[3] = self.height - self.options.crop[1];
+             }
+
+             //resize image is needed - e.g width XOR height (one must be null) is given in options 
+             if (self.options.size[0] === null && self.options.size[1] !== null) {
+                if(self.options.crop) 
+                    self.options.size[0] = self.options.crop[2];
+                else
+                    self.options.size[0] = parseInt(self.width * self.options.size[1] / self.height, 10);
+                 
+             }
+             if (self.options.size[1] === null) {
+                if(self.options.crop) 
+                    self.options.size[1] = self.options.crop[3];
+                else
+                    self.options.size[1] = parseInt(self.height * self.options.size[0]  / self.width, 10);
+                 
+             }
              self.loaded = true;
              self.draw();
         });
@@ -50,8 +83,16 @@ cajada.Shapes.Image = (function(){
         if (!this.loaded) return this; //no source...
         var ctx = this.scene.ctx;
         this.begin();
+        ctx.translate(-this.width/2, -this.height/2);
         ctx.beginPath();
-        ctx.drawImage(this.file, 0,0);
+        var size = this.options.size;
+        if (this.options.crop){
+            //use a crop method with size, size is set to given or founded size
+            var crop = this.options.crop;
+            ctx.drawImage(this.file, crop[0], crop[1], crop[2], crop[3], 0,0, size[0] , size[1] );
+        } else {
+            ctx.drawImage(this.file, 0,0, size[0], size[1]);
+        }
         ctx.closePath();
         this.end();
         return this;
