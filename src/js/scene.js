@@ -19,8 +19,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var cajada = cajada || {};
-
 /**
 * Cajada.Scene class
 * Container object to handle canvas and shapes 
