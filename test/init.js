@@ -19,7 +19,7 @@ function letsGo() {
 
     //A simple rectangle
     var r1 = new cajada.Shapes.Rect(c, {
-        at : [90,30],
+        at : [500,80],
         size: [150,80],
         strokeStyle:"blue",
         shadow: {
@@ -32,7 +32,7 @@ function letsGo() {
     
     //a rounded rectangle
     var r2 = new cajada.Shapes.RoundedRect(c, {
-        at: [120,90],
+        at: [500,320],
         size: [70,100],
         radius: 10,
         strokeStyle: "red",

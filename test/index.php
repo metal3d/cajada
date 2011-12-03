@@ -8,7 +8,8 @@
         body {
             font-family: Sans;
             font-size: 0.85em;
-            background: #AAA
+            background: #AAA;
+            margin: 0;
         }
         body > div {
             margin: 0 auto;
@@ -34,6 +35,9 @@
         section p {
             padding: 0 5px;
         }
+        section p{
+            font-size: 0.8em;
+        }
         div.highlight {
             background: rgb(239, 239, 239);
             width: 600px;
@@ -47,7 +51,19 @@ echo `pygmentize -S default -f html`;
     <body>
         <div>
             <section id="explanation">
+                <header>
                 <img src="../logo.png" />
+                <br />
+                <div class="g-plusone" data-size="medium"></div>
+                <script type="text/javascript">
+                  (function() {
+                    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+                    po.src = 'https://apis.google.com/js/plusone.js';
+                    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+                  })();
+                </script>
+                <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+                </header>
                 <article>
                 <p>
                 CaJaDa allows you to set object in a canvas tag and add some events as "mouse move, click, mouse over...". The library is pretty simple to use.
