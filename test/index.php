@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" itemscope itemtype="http://schema.org/Product">
 <head>
     <title>Test Canvas</title>
+    <meta itemprop="name" content="Cajada">
+    <meta itemprop="description" content="CaJaDa allows you to set object in a canvas tag and add some events as &quot;mouse move, click, mouse over...&quot;. The library is pretty simple to use.">
+    <meta itemprop="image" content="http://www.metal3d.org/cajada/logo.png">
     <script type="text/javascript" src="../src/js/cajada.js"></script>
     <script type="text/javascript" src="init.js"></script>
     <style type="">
@@ -69,15 +72,15 @@ echo `pygmentize -S default -f html`;
                 CaJaDa allows you to set object in a canvas tag and add some events as "mouse move, click, mouse over...". The library is pretty simple to use.
                 </p>
                 <p>
-                Try to pass mouse over rounded corner shape, try to grab and move objects... Everythin is made by object programming.
-                </p>
-                <p>
                 Take a look on the github repository : <a href="https://github.com/metal3d/cajada">https://github.com/metal3d/cajada</a> (see developement branch);
                 </p>
                 </article>
             </section>
             <section>
-                <p>A simple example</p>
+                <strong>A simple example</strong>
+                <p>
+                Try to pass mouse over rounded corner shape, try to grab and move objects... Everything is made by object programming.
+                </p>
                 <canvas id="board" width="650" height="450" >
                     Your browser doesn't support canvas tag, please use Firefox, Chromium, Google Chrome, Safari... to see this page working
                 </canvas>
