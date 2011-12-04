@@ -98,7 +98,9 @@ cajada.Shapes.Media = (function(){
                     self.options.size[1] = parseInt(self.height * self.options.size[0]  / self.width, 10);
                  
              }
-             
+            
+             self.width = self.options.size[0];
+             self.height = self.options.size[1];
              self.loaded = true;
              self.draw();    
 
@@ -116,19 +118,16 @@ cajada.Shapes.Media = (function(){
                 self._play_interval = setInterval(function (){
                     self.draw();
                     self.scene.refresh();
-                },3);
+                },40);
              }, true);
              self.file.addEventListener('pause', function (){
                 clearInterval(self._play_interval);
-                console.log('1');
              },true);
              self.file.addEventListener('ended', function (){
                 clearInterval(self._play_interval);
-                console.log('2');
              },true);
              self.file.addEventListener('error', function (){
                 clearInterval(self._play_interval);
-                console.log('3');
              },true);
 
         }
@@ -153,11 +152,11 @@ cajada.Shapes.Media = (function(){
 
     Media.prototype.draw = function () {
         if (!this.loaded) return this; //no source...
+        var size = this.options.size;
         var ctx = this.scene.ctx;
         this.begin();
-        ctx.translate(-this.width/2, -this.height/2);
+        ctx.translate(0,0);
         ctx.beginPath();
-        var size = this.options.size;
         if (this.options.crop){
             //use a crop method with size, size is set to given or founded size
             var crop = this.options.crop;
