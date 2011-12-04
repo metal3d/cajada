@@ -51,6 +51,34 @@ cajada.Scene =  function (options) {
     //a collection of functions to call BEFORE refreshing
     //append function with "addEventListener('refresh',func)"
     this._beforeRefresh = [];
+    function touchHandler(event)
+    {
+        var touches = event.changedTouches,
+            first = touches[0],
+            type = "";
+             switch(event.type)
+        {
+            case "touchstart": type = ["mousedown"]; break;
+            case "touchmove":  type=["mousemove"]; break;        
+            case "touchend":   type=["mouseup"]; break;
+            default: return;
+        }
+
+                 //initMouseEvent(type, canBubble, cancelable, view, clickCount, 
+        //           screenX, screenY, clientX, clientY, ctrlKey, 
+        //           altKey, shiftKey, metaKey, button, relatedTarget);
+        
+        for (var i=0; i<type.length; i++){
+            var simulatedEvent = document.createEvent("MouseEvent");
+            simulatedEvent.initMouseEvent(type[i], true, true, window, 1, 
+                                  first.screenX, first.screenY, 
+                                  first.clientX, first.clientY, false, 
+                                  false, false, false, 0/*left*/, first.target);
+            first.target.dispatchEvent(simulatedEvent);
+        }
+        event.preventDefault();
+        //if(event.type == "touchend") alert("stopped!" + first.clientY);
+    }
 
     //record mouse position...
     this.canvas.addEventListener('mousemove',function(evt){
@@ -90,6 +118,9 @@ cajada.Scene =  function (options) {
             }
         }, true);
     }
+    this.canvas.addEventListener("touchstart", touchHandler, true);
+    this.canvas.addEventListener("touchmove", touchHandler, true);
+    this.canvas.addEventListener("touchend", touchHandler, true);
 
 };
 
