@@ -19,11 +19,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-cajada.Shapes.Image = (function(){
+cajada.Shapes.Media = (function(){
 
-   IImage.prototype = new cajada.Shapes.Base();
-   IImage.prototype.constructor = IImage;
-   function IImage (scene, options){
+   Media.prototype = new cajada.Shapes.Base();
+   Media.prototype.constructor = Media;
+   function Media (scene, options){
         if (typeof(options.size) == "undefined")
             options.size = [null, null]; 
         this.init(scene, options);
@@ -35,14 +35,42 @@ cajada.Shapes.Image = (function(){
         }, options);
         this.loaded = false;
 
-        this.file = new Image();
+        var mediatype = "image";
+        var eventname = "load";
+        var hproperty = "height";
+        var wproperty = "width";
+        if (options.src.match(/.webm$/)) {
+            mediatype="video";
+            eventname="play";
+            //make a video element
+            var v = document.createElement('video');
+            v.style.display = "none";
+            var source = document.createElement('source');
+            source.src = options.src;
+            v.appendChild(source);
+            document.body.appendChild(v);
+            this.file = v;
+            this.width  = this.file.videoWidth;
+            this.height = this.file.videoHheight;
+            this.originalSize = [this.width, this.height];
+            hproperty = "videoHeight";
+            wproperty = "videoWidth";
+        }
+        else {
+            this.file = new Image();
+        }
+
         var self = this;
-        this.file.addEventListener('load', function (){
-             self.width  = self.file.width;
-             self.height = self.file.height;
+
+        function prepareCrop(self){
+             self.width  = self.file[wproperty];
+             self.height = self.file[hproperty];
              self.originalSize = [self.width, self.height];
-             
-             //if crop, reset size
+
+             if (self.options.size[0] === null && self.options.size[1] === null) {
+                self.options.size = [self.width, self.height];
+             }
+            //if crop, reset size
              if (self.options.crop.length == 4) {
                     //crop is [sx, sy, swidth, sheight] so we've got final size
                     self.width = self.options.crop[2];
@@ -70,16 +98,60 @@ cajada.Shapes.Image = (function(){
                     self.options.size[1] = parseInt(self.height * self.options.size[0]  / self.width, 10);
                  
              }
+             
              self.loaded = true;
-             self.draw();
-        }, true);
-        this.file.src = options.src;
+             self.draw();    
+
+        }
+
+
+        if(self.file.tagName == "VIDEO") {
+             self.file.addEventListener('loadedmetadata',function (){ 
+                 prepareCrop(self); 
+                 self.loaded = true;
+                 if(self.options.play === true) self.file.play(); 
+             }, true);
+             //self.file.addEventListener('timeupdate',function (){ prepareCrop(self);});
+             self.file.addEventListener('play', function (){
+                self._play_interval = setInterval(function (){
+                    self.draw();
+                    self.scene.refresh();
+                },3);
+             }, true);
+             self.file.addEventListener('pause', function (){
+                clearInterval(self._play_interval);
+                console.log('1');
+             },true);
+             self.file.addEventListener('ended', function (){
+                clearInterval(self._play_interval);
+                console.log('2');
+             },true);
+             self.file.addEventListener('error', function (){
+                clearInterval(self._play_interval);
+                console.log('3');
+             },true);
+
+        }
+
+
+        if(mediatype == "video"){
+            this.file.load();
+        //    this.file.play();
+        }
+        else{
+            this.file.src = options.src;
+            this.file.addEventListener('load', function (){
+                 self.loaded = true;
+                 prepareCrop(self);
+            }, true);
+        }
+
         this.src = options.src;
         this.resample = options.resample;
    }
 
 
-    IImage.prototype.draw = function () {
+    Media.prototype.draw = function () {
         if (!this.loaded) return this; //no source...
         var ctx = this.scene.ctx;
         this.begin();
@@ -98,6 +170,6 @@ cajada.Shapes.Image = (function(){
         return this;
     };
 
-    return IImage;
+    return Media;
 
 })();
