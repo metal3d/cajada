@@ -37,6 +37,10 @@
         section#explanation {
                 
         }
+        header img {
+            display: block;
+            margin: 0 auto;
+        }
 
         pre,
         section p {
