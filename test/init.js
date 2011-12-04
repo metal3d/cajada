@@ -110,13 +110,23 @@ function letsGo() {
 
 
     //an image...
-    var img = new cajada.Shapes.Image(c, {
+    var img = new cajada.Shapes.Media(c, {
         src : '../logo.png',
-        at  : [250,190],
+        at  : [180,190],
 //        crop: [80,90] 
-        size: [null,120]
+        size: [null,50]
     });
 
+
+    //and a video...
+    var vid = new cajada.Shapes.Media(c, {
+        src: "w.webm",
+        at: [0,0],
+        size: [240,null],
+        play: true
+    });
+
+//    vid.file.pause();
     //maybe nested
     c.refresh();
 
