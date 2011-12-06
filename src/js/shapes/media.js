@@ -31,10 +31,13 @@ cajada.Shapes.Media = (function(){
             src: null,
             resample: false,
             crop: false,
-            originalSize : []
+            originalSize : [],
+            loop: false,
+            play: false
         }, options);
         this.loaded = false;
 
+        this.frameFunctions = [];
         var mediatype = "image";
         var eventname = "load";
         var hproperty = "height";
@@ -44,11 +47,15 @@ cajada.Shapes.Media = (function(){
             eventname="play";
             //make a video element
             var v = document.createElement('video');
-            v.style.display = "none";
+            v.setAttribute('class', "cajada-hidden");
+            if (options.loop) v.loop="true";
+
             var source = document.createElement('source');
             source.src = options.src;
+
             v.appendChild(source);
             document.body.appendChild(v);
+
             this.file = v;
             this.width  = this.file.videoWidth;
             this.height = this.file.videoHheight;
@@ -108,26 +115,36 @@ cajada.Shapes.Media = (function(){
 
 
         if(self.file.tagName == "VIDEO") {
+
+            self._playing=false;
+            function play(p){
+                    //if params is'nt true (remember that play is called with event !
+                    if ( p!==true ) self._playing = true; //called by "play" event
+                    if (self._playing === false) return;  //called from inside function (see below)
+
+                    self._playing=true;
+                    self.draw();
+                    self.scene.refresh();
+                    setTimeout(function (){play(true);}, 40); //correspond to 30img/sec
+                    //play(true);
+                
+            }
+
              self.file.addEventListener('loadedmetadata',function (){ 
                  prepareCrop(self); 
                  self.loaded = true;
                  if(self.options.play === true) self.file.play(); 
              }, true);
              //self.file.addEventListener('timeupdate',function (){ prepareCrop(self);});
-             self.file.addEventListener('play', function (){
-                self._play_interval = setInterval(function (){
-                    self.draw();
-                    self.scene.refresh();
-                },40);
-             }, true);
+             self.file.addEventListener('play', play , true);
              self.file.addEventListener('pause', function (){
-                clearInterval(self._play_interval);
+                    self._playing=false;
              },true);
              self.file.addEventListener('ended', function (){
-                clearInterval(self._play_interval);
+                    self._playing=false;
              },true);
              self.file.addEventListener('error', function (){
-                clearInterval(self._play_interval);
+                    self._playing=false;
              },true);
 
         }
@@ -135,7 +152,6 @@ cajada.Shapes.Media = (function(){
 
         if(mediatype == "video"){
             this.file.load();
-        //    this.file.play();
         }
         else{
             this.file.src = options.src;
@@ -150,6 +166,23 @@ cajada.Shapes.Media = (function(){
    }
 
 
+    //taken and modified from https://developer.mozilla.org/En/Manipulating_video_using_canvas
+    Media.prototype.computeFrame = function (coords) {
+        var frame = this.scene.ctx.getImageData(coords[0], coords[1], coords[2], coords[3]);
+        var l = frame.data.length / 4;
+        for (f in this.frameFunctions) {
+            this.frameFunctions[f](frame.data,l);    
+        }
+
+        this.scene.ctx.putImageData(frame, coords[0], coords[1]);
+        return;
+    };
+
+
+    Media.prototype.addPixelFunction = function(f) {
+        this.frameFunctions.push(f);
+    };
+
     Media.prototype.draw = function () {
         if (!this.loaded) return this; //no source...
         var size = this.options.size;
@@ -157,17 +190,51 @@ cajada.Shapes.Media = (function(){
         this.begin();
         ctx.translate(0,0);
         ctx.beginPath();
+        var coords = [];
         if (this.options.crop){
             //use a crop method with size, size is set to given or founded size
             var crop = this.options.crop;
             ctx.drawImage(this.file, crop[0], crop[1], crop[2], crop[3], 0,0, size[0] , size[1] );
+            coords = [crop[0], crop[1], size[0], size[1]];
         } else {
             ctx.drawImage(this.file, 0,0, size[0], size[1]);
+            coords = [0, 0, size[0], size[1]];
         }
         ctx.closePath();
+        this.computeFrame(coords);
         this.end();
         return this;
     };
+
+
+
+    //add media event, typically for videos
+
+   Media.prototype.play = function() {
+       if(this.mediatype == "video" || this.mediatype == "audio") {
+           this.file.play();
+       }
+   };
+
+   Media.prototype.pause = function() {
+       if(this.mediatype == "video" || this.mediatype == "audio") {
+           this.file.pause();
+       }
+   };
+
+   Media.prototype.stop = function() {
+
+       if(this.mediatype == "video" || this.mediatype == "audio") {
+            this.file.pause();
+            this.file.rewind(1); //go to first frame
+        }
+   };
+
+   Media.prototype.volume = function(vol) {
+       if(this.mediatype == "video" || this.mediatype == "audio") {
+            this.file.volum = (vol>=0 || vol<=10) ? vol : this.file.volume;
+       }
+   };
 
     return Media;
 
