@@ -1,3 +1,6 @@
 canvas.cajada-grab {
     cursor: move;
 }
+.cajada-hidden {
+    display: none;
+}
