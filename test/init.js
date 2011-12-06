@@ -113,7 +113,6 @@ function letsGo() {
     var img = new cajada.Shapes.Media(c, {
         src : '../logo.png',
         at  : [180,190],
-//        crop: [80,90] 
         size: [null,50]
     });
 
@@ -122,11 +121,26 @@ function letsGo() {
     var vid = new cajada.Shapes.Media(c, {
         src: "w.webm",
         at: [0,0],
-        size: [240,null],
+        size: [310,null],
         play: true
     });
 
-//    vid.file.pause();
+
+    vid.addPixelFunction(function (data, len){
+        //process a greyscale (average all channels to all pixels)
+        //datas is an array of len*4 pixels (r,g,b,a) block, "len" times
+        var index = 0; //current 4 channel block
+        for (var i=0; i<len; i++){
+            index = 4*i;
+            //create a grayscale,
+            //simply aasign same value of R G and B channels that are average of the
+            //three channels (r+g+b)/3
+            //  R            G               B  
+            data[index] = data[index+1] = 
+            data[index+2] = (data[index] + data[index+1] + data[index+2]) / 3;
+        }
+    });
+
     //maybe nested
     c.refresh();
 
