@@ -42,7 +42,7 @@ cajada.Shapes.Media = (function(){
         var eventname = "load";
         var hproperty = "height";
         var wproperty = "width";
-        if (options.src.match(/.webm$/)) {
+        if (options.src.match(/\.webm$|\.mp4$|\.ogv/)) {
             mediatype="video";
             eventname="play";
             //make a video element
@@ -232,7 +232,7 @@ cajada.Shapes.Media = (function(){
 
    Media.prototype.volume = function(vol) {
        if(this.mediatype == "video" || this.mediatype == "audio") {
-            this.file.volum = (vol>=0 || vol<=10) ? vol : this.file.volume;
+            this.file.volume = (vol>=0 || vol<=10) ? vol : this.file.volume;
        }
    };
 
