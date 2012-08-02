@@ -125,7 +125,7 @@ function letsGo() {
         play: true
     });
 
-
+    //Grayscale
     vid.addPixelFunction(function (data, len){
         //process a greyscale (average all channels to all pixels)
         //datas is an array of len*4 pixels (r,g,b,a) block, "len" times
@@ -136,8 +136,9 @@ function letsGo() {
             //simply aasign same value of R G and B channels that are average of the
             //three channels (r+g+b)/3
             //  R            G               B  
-            data[index] = data[index+1] = 
-            data[index+2] = (data[index] + data[index+1] + data[index+2]) / 3;
+            data[index]   = 
+            data[index+1] = 
+            data[index+2] = (data[index] + data[index+1] + data[index+2]) * 1.2 / 3;
         }
     });
 

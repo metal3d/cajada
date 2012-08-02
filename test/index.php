@@ -92,6 +92,8 @@ echo `pygmentize -S default -f html`;
                 <canvas id="board" width="650" height="450" >
                     Your browser doesn't support canvas tag, please use Firefox, Chromium, Google Chrome, Safari... to see this page working
                 </canvas>
+                <div id="log" style="overflow: auto; height: 200px">
+                </div>
             </section>
             <section>
 <p>
