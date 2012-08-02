@@ -323,6 +323,17 @@ cajada.Shapes =  (function (){
 
 
     /**
+    * Clone a shape
+    */
+    shape.prototype.clone = function() {
+        var newInstance={};
+        for (i in this) {
+            newInstance[i] = this[i];
+        }
+        return newInstance;
+    };
+
+    /**
     * Return the namespace Shape.Circle, Shape.Rect...
     * As Shapes is in cajada namespace, call with
     * cajada.Shape.XYZ
